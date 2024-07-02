@@ -12,9 +12,9 @@ import LetsSoarPage from './LetsSoarPage';
 
 import WebApp from '@twa-dev/sdk'
 
-WebApp.initDataUnsafe
+const user = WebApp.initDataUnsafe.user?.first_name;
 
-WebApp.showAlert('Hello world!');
+WebApp.showAlert('hello ', () => user);
 const App: React.FC = () => {
   const [earnings, setEarnings] = useState(0);
   const [currentPage, setCurrentPage] = useState('home');
