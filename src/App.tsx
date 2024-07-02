@@ -10,13 +10,17 @@ import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
 import TelegramUser from './TelegramUser';
 
-console.log(TelegramUser);
-
+interface User {
+  id: number;
+  first_name: string;
+  last_name?: string;
+  username?: string;
+}
 
 const App: React.FC = () => {
   const [earnings, setEarnings] = useState(0);
   const [currentPage, setCurrentPage] = useState('home');
-  //const [telegramName] = useState('UserTelegramName'); // Placeholder for user's telegram name
+  const [user, setUser] = useState<User | null>(null);
 
   const levelNames = [
     "Bronze",    // From 0 to 4999 coins
@@ -85,14 +89,11 @@ const App: React.FC = () => {
     }));
   };
 
-  const handleInviteFriends = () => {
-    
-
-    
-  };
+  const handleInviteFriends = () => {};
 
   return (
     <div className="bg-black flex justify-center">
+      <TelegramUser setUser={setUser} />
       <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
         <div className="px-4 z-10 header">
           <div className="flex items-center justify-between pt-4 logo-title">
@@ -101,7 +102,6 @@ const App: React.FC = () => {
           </div>
           <div className="flex items-center justify-between space-x-4 mt-4 earnings-container">
             <div className="flex items-center">
-              <img src={dollarCoin} alt="Earnings" />
               <div className="text-center">
                 <p className="text-xs text-[#85827d] font-medium">Earnings</p>
                 <div className="flex items-center justify-center space-x-1">
@@ -110,6 +110,14 @@ const App: React.FC = () => {
                 </div>
               </div>
             </div>
+            {user && (
+              <div className="flex items-center">
+                <div className="text-center">
+                  <p className="text-xs text-[#85827d] font-medium">User</p>
+                  <p className="text-sm">{user.first_name} {user.last_name}</p>
+                </div>
+              </div>
+            )}
             <div className="flex items-center">
               <div className="text-center">
                 <p className="text-xs text-[#85827d] font-medium">League</p>

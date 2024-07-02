@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import window  from '@twa-dev/sdk';
+import React, { useEffect } from 'react';
+import  window  from '@twa-dev/sdk';
 
 interface User {
   id: number;
@@ -8,9 +8,11 @@ interface User {
   username?: string;
 }
 
-const TelegramUser: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+interface TelegramUserProps {
+  setUser: (user: User) => void;
+}
 
+const TelegramUser: React.FC<TelegramUserProps> = ({ setUser }) => {
   useEffect(() => {
     const initTelegram = async () => {
       try {
@@ -27,20 +29,9 @@ const TelegramUser: React.FC = () => {
     };
 
     initTelegram();
-  }, []);
+  }, [setUser]);
 
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
-  return (
-    <div>
-      <h1>Welcome, {user.first_name}!</h1>
-      <p>User ID: {user.id}</p>
-      {user.username && <p>Username: {user.username}</p>}
-      <p>User: {JSON.stringify(user, null, 2)}</p>
-    </div>
-  );
+  return null;
 };
 
 export default TelegramUser;
