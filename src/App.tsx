@@ -8,9 +8,7 @@ import Friends from './icons/Friends';
 import HomePage from './HomePage';
 import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
-import WebApp from '@twa-dev/sdk'
 
-WebApp.showAlert('Hello world!');
 
 
 const App: React.FC = () => {
@@ -86,11 +84,9 @@ const App: React.FC = () => {
   };
 
   const handleInviteFriends = () => {
-   let userId = WebApp.initDataUnsafe.user?.id
     
-    WebApp.openTelegramLink(
-      `https://t.me/share/url?url=http://t.me/miyaaaavvvvvvv_bot?start=fren=${userId}`
-    );
+
+    
   };
 
   return (
