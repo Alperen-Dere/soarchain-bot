@@ -10,7 +10,11 @@ import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
 
 
+import WebApp from '@twa-dev/sdk'
 
+WebApp.initDataUnsafe
+
+WebApp.showAlert('Hello world!');
 const App: React.FC = () => {
   const [earnings, setEarnings] = useState(0);
   const [currentPage, setCurrentPage] = useState('home');
