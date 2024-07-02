@@ -1,0 +1,221 @@
+.progress-gradient {
+  background: linear-gradient(to right, #90ef89, #d692dd, #726edd);
+}
+
+.top-glow {
+  box-shadow: 0 -26px 20px rgba(243, 186, 47, 0.3);
+}
+
+/* Define the keyframes for the blinking animation */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Apply the animation to the dot class */
+.dot {
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  animation: blink 1s infinite;
+}
+
+.circle-outer {
+  background: linear-gradient(to bottom, #575def, #202731);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90vw;
+  height: 90vw;
+  max-width: 360px;
+  max-height: 360px;
+}
+
+.circle-inner {
+  background: radial-gradient(circle, #4960b2, #282e3e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes float {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+}
+/* App.css */
+
+/* Add background gradient for the main container */
+.bg-black {
+  background: linear-gradient(135deg, #2b2b2b, #4a4a4a);
+}
+
+/* Add some padding and rounded corners to the main container */
+.w-full {
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: auto; /* Ensure the content scrolls */
+}
+
+/* Add a subtle glow effect to the header */
+.header {
+  background: linear-gradient(90deg, #6a0dad, #8e2de2);
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 4px 8px rgba(138, 43, 226, 0.5);
+}
+
+/* Style the logo and title */
+.logo-title {
+  display: flex;
+  align-items: center;
+}
+
+.logo-title img {
+  width: 48px;
+  height: 48px;
+  margin-right: 8px;
+}
+
+.logo-title p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+/* Style the earnings container */
+.earnings-container {
+  display: flex;
+  align-items: center;
+  background: #3b3b3b;
+  border-radius: 12px;
+  padding: 8px;
+  box-shadow: 0 4px 8px rgba(59, 59, 59, 0.5);
+}
+
+.earnings-container img {
+  width: 24px; /* Adjusted size */
+  height: 24px; /* Adjusted size */
+  margin-right: 8px;
+}
+
+.earnings-container p {
+  color: #d0aaff;
+}
+
+/* Style the message section */
+.message {
+  background: #1d1d1d;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  margin-top: 16px;
+  color: #ffffff;
+}
+
+.message p {
+  margin-bottom: 8px;
+}
+
+.message h2 {
+  margin-top: 0;
+  color: #8e2de2;
+}
+
+/* Style the task list */
+.task-list {
+  background: #1d1d1d;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+  margin-top: 16px;
+  padding-bottom: 100px; /* Add padding to prevent overlap */
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #2b2b2b;
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin-bottom: 8px;
+}
+
+.task-item img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+}
+
+.task-item p {
+  margin: 0;
+  color: #ffffff;
+}
+
+.task-item .earnings {
+  display: flex;
+  align-items: center;
+}
+
+.task-item .earnings img {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+.task-item .complete {
+  color: #28a745;
+  font-weight: bold;
+}
+
+/* Style the bottom navigation buttons */
+.bottom-nav {
+  background: #3b3b3b;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  justify-content: space-around;
+  box-shadow: 0 4px 8px rgba(59, 59, 59, 0.5);
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  max-width: 100%; /* Ensure it fits the screen width */
+}
+
+.bottom-nav div {
+  text-align: center;
+  color: #d0aaff;
+}
+
+.bottom-nav div p {
+  margin-top: 4px;
+}
+
+.bottom-nav div.active {
+  background: #8e2de2;
+  border-radius: 12px;
+  color: #ffffff;
+  padding: 8px;
+}
