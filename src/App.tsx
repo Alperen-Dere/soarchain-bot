@@ -8,13 +8,11 @@ import Friends from './icons/Friends';
 import HomePage from './HomePage';
 import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
+import TelegramUser from './TelegramUser';
+
+console.log(TelegramUser);
 
 
-import WebApp from '@twa-dev/sdk'
-
-const user = WebApp.initDataUnsafe.user?.first_name;
-
-WebApp.showAlert('hello ', () => user);
 const App: React.FC = () => {
   const [earnings, setEarnings] = useState(0);
   const [currentPage, setCurrentPage] = useState('home');
