@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import { soarchainLogo, dollarCoin } from './images';
 import Info from './icons/Info';
@@ -15,62 +15,18 @@ interface User {
   first_name: string;
   last_name?: string;
   username?: string;
+  earnings: number;
 }
 
 const App: React.FC = () => {
-  const [earnings, setEarnings] = useState(0);
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const levelNames = [
-    "Bronze",    // From 0 to 4999 coins
-    "Silver",    // From 5000 coins to 24,999 coins
-    "Gold",      // From 25,000 coins to 99,999 coins
-    "Platinum",  // From 100,000 coins to 999,999 coins
-    "Diamond",   // From 1,000,000 coins to 2,000,000 coins
-    "Epic",      // From 2,000,000 coins to 10,000,000 coins
-    "Legendary", // From 10,000,000 coins to 50,000,000 coins
-    "Master",    // From 50,000,000 coins to 100,000,000 coins
-    "GrandMaster" // From 100,000,000 coins to 1,000,000,000 coins
-  ];
-
-  const levelMinPoints = [
-    0,        // Bronze
-    5000,     // Silver
-    25000,    // Gold
-    100000,   // Platinum
-    1000000,  // Diamond
-    2000000,  // Epic
-    10000000, // Legendary
-    50000000, // Master
-    100000000// GrandMaster
-  ];
-
-  const [levelIndex, setLevelIndex] = useState(0);
-
-  useEffect(() => {
-    // Simulate fetching earnings from backend
-    const simulatedEarnings = 35000; // Static value for now
-    setEarnings(simulatedEarnings);
-  }, []);
-
-  useEffect(() => {
-    for (let i = levelMinPoints.length - 1; i >= 0; i--) {
-      if (earnings >= levelMinPoints[i]) {
-        setLevelIndex(i);
-        break;
-      }
+  const handleTaskCompletion = async () => {
+    if (user) {
+      // Handle task completion logic
     }
-  }, [earnings, levelMinPoints]);
-
-  const handleTaskCompletion = (taskId: number, reward: number) => {
-    setTasks(prevTasks => prevTasks.map(task => {
-      if (task.id === taskId) {
-        return { ...task, completed: true, verified: false };
-      }
-      return task;
-    }));
-    setEarnings(prevEarnings => prevEarnings + reward);
   };
 
   const [tasks, setTasks] = useState([
@@ -91,9 +47,17 @@ const App: React.FC = () => {
 
   const handleInviteFriends = () => {};
 
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-black flex justify-center">
-      <TelegramUser setUser={setUser} />
+      <TelegramUser setUser={setUser} setLoading={setLoading} />
       <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
         <div className="px-4 z-10 header">
           <div className="flex items-center justify-between pt-4 logo-title">
@@ -105,7 +69,7 @@ const App: React.FC = () => {
               <div className="text-center">
                 <p className="text-xs text-[#85827d] font-medium">Earnings</p>
                 <div className="flex items-center justify-center space-x-1">
-                  <p className="text-sm">{earnings.toLocaleString()} Coins</p>
+                  <p className="text-sm">{user ? user.earnings.toLocaleString() : 0} Coins</p>
                   <Info size={20} className="text-[#43433b]" />
                 </div>
               </div>
@@ -121,7 +85,7 @@ const App: React.FC = () => {
             <div className="flex items-center">
               <div className="text-center">
                 <p className="text-xs text-[#85827d] font-medium">League</p>
-                <p className="text-sm">{levelNames[levelIndex]}</p>
+                <p className="text-sm">TBD</p>
               </div>
             </div>
             <Settings className="text-white" />
