@@ -29,11 +29,37 @@ interface Task {
   icon: string;
 }
 
+const levelNames = [
+  "Bronze",    // From 0 to 4999 coins
+  "Silver",    // From 5000 coins to 24,999 coins
+  "Gold",      // From 25,000 coins to 99,999 coins
+  "Platinum",  // From 100,000 coins to 999,999 coins
+  "Diamond",   // From 1,000,000 coins to 2,000,000 coins
+  "Epic",      // From 2,000,000 coins to 10,000,000 coins
+  "Legendary", // From 10,000,000 coins to 50,000,000 coins
+  "Master",    // From 50,000,000 coins to 100,000,000 coins
+  "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
+  "Lord"       // From 1,000,000,000 coins to ∞
+];
+
+const levelMinPoints = [
+  0,        // Bronze
+  5000,     // Silver
+  6000,    // Gold
+  10000,   // Platinum
+  10000,  // Diamond
+  200000,  // Epic
+  1000000, // Legendary
+  50000000, // Master
+  100000000,// GrandMaster
+];
+
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState<User | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [earnings, setEarnings] = useState(0);
+  const [levelIndex, setLevelIndex] = useState(0);
 
   useEffect(() => {
     fetchTasks().then(fetchedTasks => setTasks(fetchedTasks));
@@ -43,6 +69,15 @@ const App: React.FC = () => {
     const totalEarnings = tasks.reduce((sum, task) => task.verified ? sum + task.reward : sum, 0);
     setEarnings(totalEarnings);
   }, [tasks]);
+
+  useEffect(() => {
+    for (let i = levelMinPoints.length - 1; i >= 0; i--) {
+      if (earnings >= levelMinPoints[i]) {
+        setLevelIndex(i);
+        break;
+      }
+    }
+  }, [earnings]);
 
   const handleTaskLinkClick = (taskId: number, link: string) => {
     window.open(link, '_blank');
@@ -109,7 +144,7 @@ const App: React.FC = () => {
             <div className="flex items-center">
               <div className="text-center">
                 <p className="text-xs text-[#85827d] font-medium">League</p>
-                <p className="text-sm">TBD</p>
+                <p className="text-sm">{levelNames[levelIndex]}</p>
               </div>
             </div>
             <Settings className="text-white" />
