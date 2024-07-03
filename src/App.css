@@ -161,6 +161,12 @@
   font-weight: bold;
 }
 
+.task-item .claimed {
+  color: #6c757d;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
 .task-item button.task-button {
   background: #8e2de2;
   color: white;

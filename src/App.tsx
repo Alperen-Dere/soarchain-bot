@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { soarchainLogo, dollarCoin } from './images'; // Ensure these images are imported correctly
+import { soarchainLogo, dollarCoin} from './images'; // Ensure these images are imported correctly
 import Info from './icons/Info';
 import Settings from './icons/Settings';
 import Coins from './icons/Coins';
@@ -39,18 +39,20 @@ const levelNames = [
   "Legendary", // From 10,000,000 coins to 50,000,000 coins
   "Master",    // From 50,000,000 coins to 100,000,000 coins
   "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
+  "Lord"       // From 1,000,000,000 coins to ∞
 ];
 
 const levelMinPoints = [
   0,        // Bronze
   5000,     // Silver
-  6000,    // Gold
-  10000,   // Platinum
-  10000,  // Diamond
-  200000,  // Epic
-  1000000, // Legendary
+  25000,    // Gold
+  100000,   // Platinum
+  1000000,  // Diamond
+  2000000,  // Epic
+  10000000, // Legendary
   50000000, // Master
   100000000,// GrandMaster
+  1000000000// Lord
 ];
 
 const App: React.FC = () => {
@@ -166,27 +168,32 @@ const App: React.FC = () => {
                       </div>
                     </div>
                     <div className="flex flex-col items-center">
-                      {task.completed && !task.verified ? (
-                        <button
-                          onClick={() => handleTaskVerification(task.id)}
-                          className="bg-purple-600 text-white px-2 py-1 rounded-full task-button mt-1"
-                        >
-                          Verify
-                        </button>
+                      {task.verified ? (
+                        <span className="claimed">Claimed</span>
                       ) : (
-                        <button
-                          onClick={() => handleTaskLinkClick(task.id, task.link)}
-                          className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
-                        >
-                          ✔
-                        </button>
+                        <>
+                          {task.completed ? (
+                            <button
+                              onClick={() => handleTaskVerification(task.id)}
+                              className="bg-purple-600 text-white px-2 py-1 rounded-full task-button mt-1"
+                            >
+                              Verify
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleTaskLinkClick(task.id, task.link)}
+                              className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
+                            >
+                              ✔
+                            </button>
+                          )}
+                        </>
                       )}
                       <div className="earnings flex items-center mt-1">
                         <img src={dollarCoin} alt="Coin" className="coin-icon" />
                         <p>+{task.reward.toLocaleString()}</p>
                       </div>
                     </div>
-                    {task.verified && <span className="complete">✔</span>}
                   </div>
                 ))}
                 <div className="task-item flex items-center justify-between">
