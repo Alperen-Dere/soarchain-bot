@@ -41,7 +41,7 @@ const App: React.FC = () => {
     if (user) {
       const userId = user.id;
       WebApp.openTelegramLink(
-        `https://t.me/share/url?url=t.me/soarc_bot/SoarchainLaunch?start=fren=${userId}`
+        `https://t.me/share/url?url=t.me/soarc_bot/SoarchainLaunch?start=fren=${userId}`      
         );
     }
   };
@@ -60,6 +60,7 @@ const App: React.FC = () => {
               <div className="text-center">
                 <p className="text-xs text-[#85827d] font-medium">Earnings</p>
                 <div className="flex items-center justify-center space-x-1">
+                  <img src={dollarCoin} alt="Earnings" className="coin-icon" />
                   <p className="text-sm">{user ? user.earnings.toLocaleString() : 0} Coins</p>
                   <Info size={20} className="text-[#43433b]" />
                 </div>
@@ -105,9 +106,9 @@ const App: React.FC = () => {
                     {!task.completed && (
                       <button
                         onClick={() => handleTaskCompletion()}
-                        className="bg-purple-600 text-white px-2 py-1 rounded task-button"
+                        className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
                       >
-                        Complete
+                        ✔
                       </button>
                     )}
                   </div>
@@ -122,9 +123,9 @@ const App: React.FC = () => {
                   </div>
                   <button
                     onClick={handleInviteFriends}
-                    className="bg-purple-600 text-white px-2 py-1 rounded task-button"
+                    className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
                   >
-                    Invite friend
+                    Invite
                   </button>
                 </div>
               </div>
