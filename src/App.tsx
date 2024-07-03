@@ -44,7 +44,8 @@ const App: React.FC = () => {
     setEarnings(totalEarnings);
   }, [tasks]);
 
-  const handleTaskCompletion = (taskId: number) => {
+  const handleTaskLinkClick = (taskId: number, link: string) => {
+    window.open(link, '_blank');
     setTasks(prevTasks =>
       prevTasks.map(task =>
         task.id === taskId ? { ...task, completed: true } : task
@@ -57,6 +58,9 @@ const App: React.FC = () => {
       prevTasks.map(task =>
         task.id === taskId ? { ...task, verified: true } : task
       )
+    );
+    setEarnings(prevEarnings =>
+      prevEarnings + (tasks.find(task => task.id === taskId)?.reward || 0)
     );
   };
 
@@ -127,24 +131,27 @@ const App: React.FC = () => {
                       </div>
                     </div>
                     <div className="flex flex-col items-center">
-                      <button
-                        onClick={() => handleTaskCompletion(task.id)}
-                        className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
-                      >
-                        ✔
-                      </button>
-                      <button
-                        onClick={() => handleTaskVerification(task.id)}
-                        className="bg-purple-600 text-white px-2 py-1 rounded-full task-button mt-1"
-                      >
-                        Verify
-                      </button>
+                      {task.completed && !task.verified ? (
+                        <button
+                          onClick={() => handleTaskVerification(task.id)}
+                          className="bg-purple-600 text-white px-2 py-1 rounded-full task-button mt-1"
+                        >
+                          Verify
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleTaskLinkClick(task.id, task.link)}
+                          className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
+                        >
+                          ✔
+                        </button>
+                      )}
                       <div className="earnings flex items-center mt-1">
                         <img src={dollarCoin} alt="Coin" className="coin-icon" />
                         <p>+{task.reward.toLocaleString()}</p>
                       </div>
                     </div>
-                    {task.completed && <span className="complete">✔</span>}
+                    {task.verified && <span className="complete">✔</span>}
                   </div>
                 ))}
                 <div className="task-item flex items-center justify-between">
