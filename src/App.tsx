@@ -41,8 +41,8 @@ const App: React.FC = () => {
     if (user) {
       const userId = user.id;
       WebApp.openTelegramLink(
-        `https://t.me/share/url?url=t.me/soarc_bot/SoarchainLaunch?start=fren=${userId}`      
-        );
+        `https://t.me/share/url?url=http://t.me/YOUR_BOT_USERNAME?start=fren=${userId}`
+      );
     }
   };
 
@@ -98,19 +98,19 @@ const App: React.FC = () => {
                         <p className="task-details">{task.details}</p>
                       </div>
                     </div>
-                    <div className="earnings">
-                      <img src={dollarCoin} alt="Coin" className="coin-icon" />
-                      <p>+{task.reward.toLocaleString()}</p>
-                      {task.completed && <span className="complete">✔</span>}
-                    </div>
-                    {!task.completed && (
+                    <div className="flex flex-col items-center">
                       <button
                         onClick={() => handleTaskCompletion()}
                         className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
                       >
                         ✔
                       </button>
-                    )}
+                      <div className="earnings flex items-center mt-1">
+                        <img src={dollarCoin} alt="Coin" className="coin-icon" />
+                        <p>+{task.reward.toLocaleString()}</p>
+                      </div>
+                    </div>
+                    {task.completed && <span className="complete">✔</span>}
                   </div>
                 ))}
                 <div className="task-item flex items-center justify-between">
@@ -121,12 +121,18 @@ const App: React.FC = () => {
                       <p className="task-details">Invite your friends to join Soarchain and earn rewards when they sign up using your referral link.</p>
                     </div>
                   </div>
-                  <button
-                    onClick={handleInviteFriends}
-                    className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
-                  >
-                    Invite
-                  </button>
+                  <div className="flex flex-col items-center">
+                    <button
+                      onClick={handleInviteFriends}
+                      className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
+                    >
+                      Invite
+                    </button>
+                    <div className="earnings flex items-center mt-1">
+                      <img src={dollarCoin} alt="Coin" className="coin-icon" />
+                      <p>+25000</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
