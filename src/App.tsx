@@ -21,7 +21,6 @@ interface User {
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
 
   const handleTaskCompletion = async () => {
     if (user) {
@@ -47,17 +46,9 @@ const App: React.FC = () => {
 
   const handleInviteFriends = () => {};
 
-  if (loading) {
-    return (
-      <div className="loading-screen">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-black flex justify-center">
-      <TelegramUser setUser={setUser} setLoading={setLoading} />
+      <TelegramUser setUser={setUser} />
       <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
         <div className="px-4 z-10 header">
           <div className="flex items-center justify-between pt-4 logo-title">

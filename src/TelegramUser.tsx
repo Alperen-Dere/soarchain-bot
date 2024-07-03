@@ -11,15 +11,13 @@ interface User {
 
 interface TelegramUserProps {
   setUser: (user: User) => void;
-  setLoading: (loading: boolean) => void;
 }
 
-const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, setLoading }) => {
+const TelegramUser: React.FC<TelegramUserProps> = ({ setUser }) => {
   useEffect(() => {
     const initTelegram = async () => {
       try {
         console.log('Initializing Telegram...');
-        setLoading(true);
         if (window) {
           console.log('Telegram window ready');
           window.ready();
@@ -31,14 +29,11 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, setLoading }) => {
         }
       } catch (error) {
         console.error('Failed to initialize Telegram:', error);
-      } finally {
-        setLoading(false);
-        console.log('Loading complete');
       }
     };
 
     initTelegram();
-  }, [setUser, setLoading]);
+  }, [setUser]);
 
   return null;
 };
