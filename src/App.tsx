@@ -39,7 +39,7 @@ const App: React.FC = () => {
     if (user) {
       const userId = user.id;
       WebApp.openTelegramLink(
-        `https://t.me/share/url?url=http://t.me/YOUR_BOT_USERNAME?start=fren=${userId}`
+        `https://t.me/share/url?url=http://t.me/https://t.me/soarc_bot?start=fren=${userId}`
       );
     }
   };
