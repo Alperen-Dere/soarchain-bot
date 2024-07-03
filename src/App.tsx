@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { soarchainLogo, dollarCoin } from './images'; // Ensure these images are imported correctly
+import { soarchainLogo, dollarCoin } from './images'; 
 import Info from './icons/Info';
 import Settings from './icons/Settings';
 import Coins from './icons/Coins';
@@ -40,7 +40,7 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const totalEarnings = tasks.reduce((sum, task) => task.completed ? sum + task.reward : sum, 0);
+    const totalEarnings = tasks.reduce((sum, task) => task.verified ? sum + task.reward : sum, 0);
     setEarnings(totalEarnings);
   }, [tasks]);
 
