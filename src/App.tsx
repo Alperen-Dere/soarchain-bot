@@ -39,7 +39,6 @@ const levelNames = [
   "Legendary", // From 10,000,000 coins to 50,000,000 coins
   "Master",    // From 50,000,000 coins to 100,000,000 coins
   "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
-  "Lord"       // From 1,000,000,000 coins to ∞
 ];
 
 const levelMinPoints = [
