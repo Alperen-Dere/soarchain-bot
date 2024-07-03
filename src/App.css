@@ -76,33 +76,13 @@
   overflow: auto;
 }
 
-.header {
-  background: linear-gradient(90deg, #6a0dad, #8e2de2);
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 4px 8px rgba(138, 43, 226, 0.5);
-}
-
-.logo-title {
+.header .logo-title {
   display: flex;
   align-items: center;
-}
-
-.logo-title img {
-  width: 48px;
-  height: 48px;
-  margin-right: 8px;
-}
-
-.logo-title p {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #ffffff;
+  justify-content: space-between;
 }
 
 .earnings-container {
-  display: flex;
-  align-items: center;
   background: #3b3b3b;
   border-radius: 12px;
   padding: 8px;
@@ -117,24 +97,6 @@
 
 .earnings-container p {
   color: #d0aaff;
-}
-
-.message {
-  background: #1d1d1d;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-  margin-top: 16px;
-  color: #ffffff;
-}
-
-.message p {
-  margin-bottom: 8px;
-}
-
-.message h2 {
-  margin-top: 0;
-  color: #8e2de2;
 }
 
 .task-list {
@@ -156,15 +118,25 @@
   margin-bottom: 8px;
 }
 
-.task-item img {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
+.task-item img.task-icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 16px;
 }
 
-.task-item p {
+.task-item .task-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.task-item .task-info p {
   margin: 0;
   color: #ffffff;
+}
+
+.task-item .task-info .task-details {
+  font-size: 12px;
+  color: #cccccc;
 }
 
 .task-item .earnings {
@@ -172,7 +144,7 @@
   align-items: center;
 }
 
-.task-item .earnings img {
+.task-item .earnings img.coin-icon {
   width: 16px;
   height: 16px;
   margin-right: 4px;
@@ -223,14 +195,4 @@
   border-radius: 12px;
   color: #ffffff;
   padding: 8px;
-}
-
-.loading-screen {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  color: #ffffff;
-  font-size: 1.5rem;
-  background-color: #000000;
 }

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
-import { soarchainLogo, dollarCoin, telegram, twitter } from './images'; // Make sure you have these images
+import { soarchainLogo, dollarCoin, telegram, twitter } from './images';
 import Info from './icons/Info';
 import Settings from './icons/Settings';
 import Coins from './icons/Coins';
 import Friends from './icons/Friends';
+import WebApp from '@twa-dev/sdk';
 import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
 import TelegramUser from './TelegramUser';
-import WebApp from '@twa-dev/sdk';
 
 interface User {
   id: number;
@@ -29,17 +29,19 @@ const App: React.FC = () => {
   };
 
   const [tasks] = useState([
-    { id: 1, title: 'Join the Soarchain Telegram Group', reward: 5000, completed: false, details: 'Become part of our community to stay updated with all the latest news and developments.', link: 'https://t.me/soarchain', verified: false },
-    { id: 2, title: 'Follow & Engage on Twitter', reward: 5000, completed: false, details: 'Follow our official account, retweet the airdrop announcement, and tag a friend. Help us spread the word and grow our community!', link: 'https://twitter.com/soarchain', verified: false },
-    { id: 3, title: 'Complete the Registration Form', reward: 10000, completed: false, details: 'Provide your details through our form to ensure you’re eligible for token distribution. Make sure you enter correct information for seamless participation.', link: '#', verified: false },
+    { id: 1, title: 'Join our TG channel', reward: 5000, completed: false, details: 'Become part of our community to stay updated with all the latest news and developments.', link: 'https://t.me/soarchain', verified: false, icon: telegram },
+    { id: 2, title: 'Follow our X account', reward: 5000, completed: false, details: 'Follow our official account, retweet the airdrop announcement, and tag a friend. Help us spread the word and grow our community!', link: 'https://twitter.com/soarchain', verified: false, icon: twitter },
+    { id: 3, title: 'Complete the Registration Form', reward: 10000, completed: false, details: 'Provide your details through our form to ensure you’re eligible for token distribution. Make sure you enter correct information for seamless participation.', link: '#', verified: false, icon: soarchainLogo },
+    { id: 4, title: 'Invite Friends', reward: 25000, completed: false, details: 'Invite your friends to join Soarchain and earn rewards when they sign up using your referral link.', link: '', verified: false, icon: soarchainLogo }
   ]);
+
 
 
   const handleInviteFriends = () => {
     if (user) {
       const userId = user.id;
       WebApp.openTelegramLink(
-        `https://t.me/share/url?url=http://t.me/https://t.me/soarc_bot?start=fren=${userId}`
+        `https://t.me/share/url?url=http://t.me/YOUR_BOT_USERNAME?start=fren=${userId}`
       );
     }
   };
@@ -87,14 +89,16 @@ const App: React.FC = () => {
               <div className="px-4 mt-4 task-list">
                 <h2 className="text-white text-lg font-bold">Tasks List</h2>
                 {tasks.map(task => (
-                  <div key={task.id} className="task-item">
+                  <div key={task.id} className="task-item flex items-center justify-between">
                     <div className="flex items-center">
-                      {task.id === 1 && <img src={telegram} alt="Telegram" />}
-                      {task.id === 2 && <img src={twitter} alt="Twitter" />}
-                      {task.id === 3 && <img src={soarchainLogo} alt="Soarchain" />}
-                      <p>{task.title}</p>
+                      <img src={task.icon} alt={task.title} className="task-icon" />
+                      <div className="task-info">
+                        <p>{task.title}</p>
+                        <p className="task-details">{task.details}</p>
+                      </div>
                     </div>
                     <div className="earnings">
+                      <img src={dollarCoin} alt="Coin" className="coin-icon" />
                       <p>+{task.reward.toLocaleString()}</p>
                       {task.completed && <span className="complete">✔</span>}
                     </div>
@@ -108,10 +112,13 @@ const App: React.FC = () => {
                     )}
                   </div>
                 ))}
-                <div className="task-item">
+                <div className="task-item flex items-center justify-between">
                   <div className="flex items-center">
-                    <img src={soarchainLogo} alt="Invite Friends" />
-                    <p>Invite Friends</p>
+                    <img src={soarchainLogo} alt="Invite Friends" className="task-icon" />
+                    <div className="task-info">
+                      <p>Invite Friends</p>
+                      <p className="task-details">Invite your friends to join Soarchain and earn rewards when they sign up using your referral link.</p>
+                    </div>
                   </div>
                   <button
                     onClick={handleInviteFriends}
