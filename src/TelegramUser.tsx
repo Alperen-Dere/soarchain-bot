@@ -18,10 +18,13 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, setLoading }) => {
   useEffect(() => {
     const initTelegram = async () => {
       try {
+        console.log('Initializing Telegram...');
         setLoading(true);
         if (window) {
+          console.log('Telegram window ready');
           window.ready();
           const userData = window.initDataUnsafe?.user;
+          console.log('User data:', userData);
           if (userData) {
             setUser({ ...userData, earnings: 0 }); // Add default earnings value
           }
@@ -30,6 +33,7 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, setLoading }) => {
         console.error('Failed to initialize Telegram:', error);
       } finally {
         setLoading(false);
+        console.log('Loading complete');
       }
     };
 
