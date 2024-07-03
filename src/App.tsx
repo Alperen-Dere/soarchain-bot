@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { soarchainLogo, dollarCoin } from './images'; 
+import { soarchainLogo, dollarCoin } from './images'; // Ensure these images are imported correctly
 import Info from './icons/Info';
 import Settings from './icons/Settings';
 import Coins from './icons/Coins';
@@ -104,6 +104,7 @@ const App: React.FC = () => {
       WebApp.openTelegramLink(
         `https://t.me/share/url?url=t.me/soarc_bot/SoarchainLaunch?start=fren=${userId}`
       );
+      setEarnings(prevEarnings => prevEarnings + 25000); // Add reward for inviting friends
     }
   };
 
