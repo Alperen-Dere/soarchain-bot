@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { soarchainLogo, dollarCoin, telegram, twitter } from './images'; // Ensure these images are imported correctly
+import { soarchainLogo, dollarCoin } from './images'; // Ensure these images are imported correctly
 import Info from './icons/Info';
 import Settings from './icons/Settings';
 import Coins from './icons/Coins';
@@ -9,31 +9,56 @@ import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
 import TelegramUser from './TelegramUser';
 import WebApp from '@twa-dev/sdk';
+import { fetchTasks } from './MockBackend';
 
 interface User {
   id: number;
   first_name: string;
   last_name?: string;
   username?: string;
-  earnings: number;
+}
+
+interface Task {
+  id: number;
+  title: string;
+  reward: number;
+  completed: boolean;
+  details: string;
+  link: string;
+  verified: boolean;
+  icon: string;
 }
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState<User | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [earnings, setEarnings] = useState(0);
 
-  const handleTaskCompletion = async () => {
-    if (user) {
-      // Handle task completion logic
-    }
+  useEffect(() => {
+    fetchTasks().then(fetchedTasks => setTasks(fetchedTasks));
+  }, []);
+
+  useEffect(() => {
+    const totalEarnings = tasks.reduce((sum, task) => task.completed ? sum + task.reward : sum, 0);
+    setEarnings(totalEarnings);
+  }, [tasks]);
+
+  const handleTaskCompletion = (taskId: number) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.id === taskId ? { ...task, completed: true } : task
+      )
+    );
   };
 
-  const [tasks] = useState([
-    { id: 1, title: 'Join our TG channel', reward: 5000, completed: false, details: 'Become part of our community to stay updated with all the latest news and developments.', link: 'https://t.me/soarchain', verified: false, icon: telegram },
-    { id: 2, title: 'Follow our X account', reward: 5000, completed: false, details: 'Follow our official account, retweet the airdrop announcement, and tag a friend. Help us spread the word and grow our community!', link: 'https://twitter.com/soarchain', verified: false, icon: twitter },
-    { id: 3, title: 'Complete the Registration Form', reward: 10000, completed: false, details: 'Provide your details through our form to ensure you’re eligible for token distribution. Make sure you enter correct information for seamless participation.', link: '#', verified: false, icon: soarchainLogo },
-    { id: 4, title: 'Invite Friends', reward: 25000, completed: false, details: 'Invite your friends to join Soarchain and earn rewards when they sign up using your referral link.', link: '', verified: false, icon: soarchainLogo }
-  ]);
+  const handleTaskVerification = (taskId: number) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.id === taskId ? { ...task, verified: true } : task
+      )
+    );
+  };
 
   const handleInviteFriends = () => {
     if (user) {
@@ -64,7 +89,7 @@ const App: React.FC = () => {
                 <p className="text-xs text-[#85827d] font-medium">Earnings</p>
                 <div className="flex items-center justify-center space-x-1">
                   <img src={dollarCoin} alt="Earnings" className="coin-icon" />
-                  <p className="text-sm">{user ? user.earnings.toLocaleString() : 0} Coins</p>
+                  <p className="text-sm">{earnings.toLocaleString()} Coins</p>
                   <Info size={20} className="text-[#43433b]" />
                 </div>
               </div>
@@ -87,7 +112,7 @@ const App: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex-grow mt-4 bg-[#8e2de2] rounded-t-[48px] relative top-glow z-0 overflow-auto">
+        <div className="flex-grow mt-4 bg-[#8e2de2] rounded-t-[48px] relative top-glow z-0">
           <div className="absolute top-[2px] left-0 right-0 bottom-0 bg-[#1d2025] rounded-t-[46px] overflow-auto">
             {currentPage === 'home' && (
               <div className="px-4 mt-4 task-list">
@@ -103,10 +128,16 @@ const App: React.FC = () => {
                     </div>
                     <div className="flex flex-col items-center">
                       <button
-                        onClick={() => handleTaskCompletion()}
+                        onClick={() => handleTaskCompletion(task.id)}
                         className="bg-purple-600 text-white px-2 py-1 rounded-full task-button"
                       >
                         ✔
+                      </button>
+                      <button
+                        onClick={() => handleTaskVerification(task.id)}
+                        className="bg-purple-600 text-white px-2 py-1 rounded-full task-button mt-1"
+                      >
+                        Verify
                       </button>
                       <div className="earnings flex items-center mt-1">
                         <img src={dollarCoin} alt="Coin" className="coin-icon" />

@@ -75,7 +75,7 @@
   padding: 16px;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  overflow: auto;
+  overflow: hidden;
 }
 
 .header .logo-title {
@@ -118,7 +118,6 @@
   padding: 16px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
   margin-top: 16px;
-  padding-bottom: 100px;
 }
 
 .task-item {
@@ -209,4 +208,13 @@
   border-radius: 12px;
   color: #ffffff;
   padding: 8px;
+}
+
+.flex-grow {
+  overflow: hidden;
+}
+
+.flex-grow > div {
+  overflow-y: auto;
+  height: 100%;
 }
