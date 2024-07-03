@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import './App.css';
-import { soarchainLogo, dollarCoin, telegram, twitter } from './images';
+import { soarchainLogo, dollarCoin, telegram, twitter } from './images'; // Ensure these images are imported correctly
 import Info from './icons/Info';
 import Settings from './icons/Settings';
 import Coins from './icons/Coins';
 import Friends from './icons/Friends';
-import WebApp from '@twa-dev/sdk';
 import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
 import TelegramUser from './TelegramUser';
+import WebApp from '@twa-dev/sdk';
 
 interface User {
   id: number;
@@ -41,8 +41,8 @@ const App: React.FC = () => {
     if (user) {
       const userId = user.id;
       WebApp.openTelegramLink(
-        `https://t.me/share/url?url=http://t.me/YOUR_BOT_USERNAME?start=fren=${userId}`
-      );
+        `https://t.me/share/url?url=t.me/soarc_bot/SoarchainLaunch?start=fren=${userId}`
+        );
     }
   };
 
@@ -52,7 +52,7 @@ const App: React.FC = () => {
       <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
         <div className="px-4 z-10 header">
           <div className="flex items-center justify-between pt-4 logo-title">
-            <img src={soarchainLogo} alt="Soarchain Logo" />
+            <img src={soarchainLogo} alt="Soarchain Logo" className="soarchain-logo" />
             <p>Soarchain</p>
           </div>
           <div className="flex items-center justify-between space-x-4 mt-4 earnings-container">
@@ -105,7 +105,7 @@ const App: React.FC = () => {
                     {!task.completed && (
                       <button
                         onClick={() => handleTaskCompletion()}
-                        className="bg-purple-600 text-white px-2 py-1 rounded"
+                        className="bg-purple-600 text-white px-2 py-1 rounded task-button"
                       >
                         Complete
                       </button>
@@ -122,7 +122,7 @@ const App: React.FC = () => {
                   </div>
                   <button
                     onClick={handleInviteFriends}
-                    className="bg-purple-600 text-white px-2 py-1 rounded"
+                    className="bg-purple-600 text-white px-2 py-1 rounded task-button"
                   >
                     Invite friend
                   </button>

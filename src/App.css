@@ -82,6 +82,11 @@
   justify-content: space-between;
 }
 
+.header .soarchain-logo {
+  width: 80px;
+  height: auto;
+}
+
 .earnings-container {
   background: #3b3b3b;
   border-radius: 12px;
@@ -155,23 +160,24 @@
   font-weight: bold;
 }
 
-.task-item button {
+.task-item button.task-button {
   background: #8e2de2;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 6px 12px;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 14px;
 }
 
-.task-item button:hover {
+.task-item button.task-button:hover {
   background: #6a0dad;
 }
 
 .bottom-nav {
   background: #3b3b3b;
   border-radius: 12px;
-  padding: 16px;
+  padding: 8px;
   display: flex;
   justify-content: space-around;
   box-shadow: 0 4px 8px rgba(59, 59, 59, 0.5);
@@ -188,6 +194,7 @@
 
 .bottom-nav div p {
   margin-top: 4px;
+  font-size: 12px;
 }
 
 .bottom-nav div.active {
