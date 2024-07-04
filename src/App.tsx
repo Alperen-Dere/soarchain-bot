@@ -56,16 +56,11 @@ const levelMinPoints = [
   1000000000
 ];
 
-const fetchWithLogging = async (url: string, options: RequestInit = {}, updateLogs: (log: string) => void) => {
-  updateLogs(`Request: ${url} ${JSON.stringify(options)}`);
+const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
   console.log(`Request: ${url} ${JSON.stringify(options)}`);
-
   const response = await fetch(url, options);
   const data = await response.json();
-
-  updateLogs(`Response: ${url} ${JSON.stringify(data)}`);
   console.log(`Response: ${url} ${JSON.stringify(data)}`);
-
   return data;
 };
 
@@ -75,16 +70,11 @@ const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [earnings, setEarnings] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
-  const [logs, setLogs] = useState<string[]>([]);
   const backendAPI = process.env.REACT_APP_BACKEND_API_URL;
-
-  const updateLogs = (log: string) => {
-    setLogs(prevLogs => [...prevLogs, log]);
-  };
 
   useEffect(() => {
     if (user && backendAPI) {
-      fetchWithLogging(`${backendAPI}/user/${user.id}`, {}, updateLogs)
+      fetchWithLogging(`${backendAPI}/user/${user.id}`)
         .then(data => {
           if (data.error === 'User not found') {
             return fetchWithLogging(`${backendAPI}/user`, {
@@ -99,7 +89,7 @@ const App: React.FC = () => {
                 earnings: 0,
                 tasks: [],
               }),
-            }, updateLogs);
+            });
           }
           return data;
         })
@@ -110,7 +100,6 @@ const App: React.FC = () => {
         })
         .catch(error => {
           console.error('Error fetching/creating user:', error);
-          updateLogs(`Error: ${error.message}`);
         });
     }
   }, [user, backendAPI]);
@@ -161,13 +150,12 @@ const App: React.FC = () => {
               task.id === taskId ? { ...task, verified: true } : task
             )
           }),
-        }, updateLogs)
+        })
           .then(data => {
             setUser(data);
           })
           .catch(error => {
             console.error('Error updating user data:', error);
-            updateLogs(`Error: ${error.message}`);
           });
       }
     }
@@ -181,17 +169,6 @@ const App: React.FC = () => {
       );
       setEarnings(prevEarnings => prevEarnings + 25000); // Add reward for inviting friends
     }
-  };
-
-  // Test the GET request
-  const testGetRequest = async () => {
-    const url = 'http://178.62.203.94:1317/user/12345';
-    updateLogs(`Testing GET request to: ${url}`);
-    console.log(`Testing GET request to: ${url}`);
-    const response = await fetch(url);
-    const data = await response.json();
-    updateLogs(`GET response: ${JSON.stringify(data)}`);
-    console.log(`GET response: ${JSON.stringify(data)}`);
   };
 
   // Scroll to top when page changes
@@ -323,21 +300,6 @@ const App: React.FC = () => {
           <Friends className="w-8 h-8 mx-auto" />
           <p className="mt-1">Let's Soar</p>
         </div>
-      </div>
-
-      {/* Logger */}
-      <div className="fixed bottom-40 left-1/2 transform -translate-x-1/2 bg-white text-black p-4 rounded-lg max-w-md overflow-auto max-h-60">
-        <h2 className="text-lg font-bold mb-2">Logs</h2>
-        {logs.map((log, index) => (
-          <p key={index}>{log}</p>
-        ))}
-      </div>
-
-      {/* Test GET request button */}
-      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2">
-        <button onClick={testGetRequest} className="bg-purple-600 text-white px-4 py-2 rounded-full">
-          Test GET Request
-        </button>
       </div>
     </div>
   );
