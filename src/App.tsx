@@ -9,6 +9,7 @@ import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
 import TelegramUser from './TelegramUser';
 import WebApp from '@twa-dev/sdk';
+import Logger from './Logger'; // Import the Logger component
 
 interface User {
   id: number;
@@ -56,13 +57,13 @@ const levelMinPoints = [
   1000000000
 ];
 
-const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
-  console.log('Request:', url, options);
+const fetchWithLogging = async (url: string, options: RequestInit = {}, updateLogs: (log: string) => void) => {
+  updateLogs(`Request: ${url} ${JSON.stringify(options)}`);
 
   const response = await fetch(url, options);
   const data = await response.json();
 
-  console.log('Response:', url, data);
+  updateLogs(`Response: ${url} ${JSON.stringify(data)}`);
 
   return data;
 };
@@ -73,11 +74,16 @@ const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [earnings, setEarnings] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
+  const [logs, setLogs] = useState<string[]>([]);
   const backendAPI = process.env.REACT_APP_BACKEND_API_URL;
+
+  const updateLogs = (log: string) => {
+    setLogs(prevLogs => [...prevLogs, log]);
+  };
 
   useEffect(() => {
     if (user && backendAPI) {
-      fetchWithLogging(`${backendAPI}/user/${user.id}`)
+      fetchWithLogging(`${backendAPI}/user/${user.id}`, {}, updateLogs)
         .then(data => {
           if (data.error === 'User not found') {
             return fetchWithLogging(`${backendAPI}/user`, {
@@ -92,7 +98,7 @@ const App: React.FC = () => {
                 earnings: 0,
                 tasks: [],
               }),
-            });
+            }, updateLogs);
           }
           return data;
         })
@@ -101,7 +107,10 @@ const App: React.FC = () => {
           setTasks(data.tasks);
           setEarnings(data.earnings);
         })
-        .catch(error => console.error('Error fetching/creating user:', error));
+        .catch(error => {
+          console.error('Error fetching/creating user:', error);
+          updateLogs(`Error: ${error.message}`);
+        });
     }
   }, [user, backendAPI]);
 
@@ -151,11 +160,14 @@ const App: React.FC = () => {
               task.id === taskId ? { ...task, verified: true } : task
             )
           }),
-        })
+        }, updateLogs)
           .then(data => {
             setUser(data);
           })
-          .catch(error => console.error('Error updating user data:', error));
+          .catch(error => {
+            console.error('Error updating user data:', error);
+            updateLogs(`Error: ${error.message}`);
+          });
       }
     }
   };
@@ -300,6 +312,9 @@ const App: React.FC = () => {
           <p className="mt-1">Let's Soar</p>
         </div>
       </div>
+
+      {/* Logger */}
+      <Logger logs={logs} />
     </div>
   );
 };
