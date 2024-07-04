@@ -70,8 +70,7 @@ const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [earnings, setEarnings] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
-  const backendAPI = process.env.REACT_APP_BACKEND_API_URL || '';
-
+  const backendAPI = process.env.REACT_APP_BACKEND_API_URL!;
   useEffect(() => {
     if (user && backendAPI) {
       fetchWithLogging(`${backendAPI}/user/${user.id}`)
