@@ -56,6 +56,17 @@ const levelMinPoints = [
   1000000000
 ];
 
+const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
+  console.log('Request:', url, options);
+
+  const response = await fetch(url, options);
+  const data = await response.json();
+
+  console.log('Response:', url, data);
+
+  return data;
+};
+
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState<User | null>(null);
@@ -66,10 +77,10 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (user && backendAPI) {
-      fetch(`${backendAPI}/user/${user.id}`)
-        .then(response => {
-          if (response.status === 404) {
-            return fetch(`${backendAPI}/user`, {
+      fetchWithLogging(`${backendAPI}/user/${user.id}`)
+        .then(data => {
+          if (data.error === 'User not found') {
+            return fetchWithLogging(`${backendAPI}/user`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
@@ -81,9 +92,9 @@ const App: React.FC = () => {
                 earnings: 0,
                 tasks: [],
               }),
-            }).then(response => response.json());
+            });
           }
-          return response.json();
+          return data;
         })
         .then(data => {
           setUser(data);
@@ -129,7 +140,7 @@ const App: React.FC = () => {
       setEarnings(prevEarnings => prevEarnings + task.reward);
       // Update backend
       if (user) {
-        fetch(`${backendAPI}/user/${user.id}`, {
+        fetchWithLogging(`${backendAPI}/user/${user.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -141,7 +152,6 @@ const App: React.FC = () => {
             )
           }),
         })
-          .then(response => response.json())
           .then(data => {
             setUser(data);
           })
