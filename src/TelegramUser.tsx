@@ -42,8 +42,6 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, backendAPI }) => {
           window.ready();
           const userData = window.initDataUnsafe?.user;
           if (userData) {
-            
-
             const data = await fetchWithLogging(`${backendAPI}/user/${userData.id}`, {});
             if (data.error === 'User not found') {
               const createdUser = await fetchWithLogging(`${backendAPI}/user`, {
@@ -59,9 +57,21 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, backendAPI }) => {
                   tasks: [],
                 }),
               });
-              setUser(createdUser);
+              setUser({
+                id: createdUser.telegramId,
+                first_name: createdUser.firstName,
+                last_name: createdUser.lastName,
+                earnings: createdUser.earnings,
+                tasks: createdUser.tasks,
+              });
             } else {
-              setUser(data);
+              setUser({
+                id: data.telegramId,
+                first_name: data.firstName,
+                last_name: data.lastName,
+                earnings: data.earnings,
+                tasks: data.tasks,
+              });
             }
           }
         }
