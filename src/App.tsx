@@ -56,6 +56,13 @@ const levelMinPoints = [
   1000000000
 ];
 
+const defaultTasks: Task[] = [
+  { id: 1, title: 'Join our TG channel', reward: 5000, completed: false, details: 'Become part of our community to stay updated with all the latest news and developments.', link: 'https://t.me/soarchain', verified: false, icon: '' },
+  { id: 2, title: 'Follow our X account', reward: 5000, completed: false, details: 'Follow our official account, retweet the airdrop announcement, and tag a friend. Help us spread the word and grow our community!', link: 'https://twitter.com/soarchain', verified: false, icon: '' },
+  { id: 3, title: 'Complete the Registration Form', reward: 10000, completed: false, details: 'Provide your details through our form to ensure you’re eligible for token distribution. Make sure you enter correct information for seamless participation.', link: '#', verified: false, icon: '' },
+  { id: 4, title: 'Invite Friends', reward: 25000, completed: false, details: 'Invite your friends to join Soarchain and earn rewards when they sign up using your referral link.', link: '', verified: false, icon: '' }
+];
+
 const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
   console.log(`Request: ${url} ${JSON.stringify(options)}`);
   const response = await fetch(url, options);
@@ -67,40 +74,39 @@ const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState<User | null>(null);
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(defaultTasks);
   const [earnings, setEarnings] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
   const backendAPI = process.env.REACT_APP_BACKEND_API_URL;
 
   useEffect(() => {
     if (user && backendAPI) {
-      fetchWithLogging(`${backendAPI}/user/${user.id}`)
-        .then(data => {
-          if (data.error === 'User not found') {
-            return fetchWithLogging(`${backendAPI}/user`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                telegramId: user.id,
-                firstName: user.first_name,
-                lastName: user.last_name || '',
-                earnings: 0,
-                tasks: [],
-              }),
-            });
-          }
-          return data;
-        })
-        .then(data => {
-          setUser(data);
-          setTasks(data.tasks);
-          setEarnings(data.earnings);
-        })
-        .catch(error => {
-          console.error('Error fetching/creating user:', error);
-        });
+      const fetchUserData = async () => {
+        const userData = await fetchWithLogging(`${backendAPI}/user/${user.id}`);
+        if (userData.error === 'User not found') {
+          const newUser = await fetchWithLogging(`${backendAPI}/user`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              telegramId: user.id,
+              firstName: user.first_name,
+              lastName: user.last_name || '',
+              earnings: 0,
+              tasks: defaultTasks,
+            }),
+          });
+          setUser(newUser);
+          setTasks(newUser.tasks);
+          setEarnings(newUser.earnings);
+        } else {
+          setUser(userData);
+          setTasks(userData.tasks);
+          setEarnings(userData.earnings);
+        }
+      };
+      fetchUserData().catch(error => console.error('Error fetching/creating user:', error));
     }
   }, [user, backendAPI]);
 
