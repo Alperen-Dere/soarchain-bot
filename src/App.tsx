@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { soarchainLogo, dollarCoin} from './images'; // Ensure these images are imported correctly
+import { soarchainLogo, dollarCoin } from './images';
 import Info from './icons/Info';
 import Settings from './icons/Settings';
 import Coins from './icons/Coins';
@@ -9,13 +9,14 @@ import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
 import TelegramUser from './TelegramUser';
 import WebApp from '@twa-dev/sdk';
-import { fetchTasks } from './MockBackend';
 
 interface User {
   id: number;
   first_name: string;
   last_name?: string;
   username?: string;
+  earnings: number;
+  tasks: Task[];
 }
 
 interface Task {
@@ -30,29 +31,29 @@ interface Task {
 }
 
 const levelNames = [
-  "Bronze",    // From 0 to 4999 coins
-  "Silver",    // From 5000 coins to 24,999 coins
-  "Gold",      // From 25,000 coins to 99,999 coins
-  "Platinum",  // From 100,000 coins to 999,999 coins
-  "Diamond",   // From 1,000,000 coins to 2,000,000 coins
-  "Epic",      // From 2,000,000 coins to 10,000,000 coins
-  "Legendary", // From 10,000,000 coins to 50,000,000 coins
-  "Master",    // From 50,000,000 coins to 100,000,000 coins
-  "GrandMaster", // From 100,000,000 coins to 1,000,000,000 coins
-  "Lord"       // From 1,000,000,000 coins to ∞
+  "Bronze",
+  "Silver",
+  "Gold",
+  "Platinum",
+  "Diamond",
+  "Epic",
+  "Legendary",
+  "Master",
+  "GrandMaster",
+  "Lord"
 ];
 
 const levelMinPoints = [
-  0,        // Bronze
-  5000,     // Silver
-  25000,    // Gold
-  100000,   // Platinum
-  1000000,  // Diamond
-  2000000,  // Epic
-  10000000, // Legendary
-  50000000, // Master
-  100000000,// GrandMaster
-  1000000000// Lord
+  0,
+  5000,
+  25000,
+  100000,
+  1000000,
+  2000000,
+  10000000,
+  50000000,
+  100000000,
+  1000000000
 ];
 
 const App: React.FC = () => {
@@ -61,13 +62,40 @@ const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [earnings, setEarnings] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
+  const backendAPI = process.env.REACT_APP_BACKEND_API_URL;
 
   useEffect(() => {
-    fetchTasks().then(fetchedTasks => setTasks(fetchedTasks));
-  }, []);
+    if (user && backendAPI) {
+      fetch(`${backendAPI}/user/${user.id}`)
+        .then(response => {
+          if (response.status === 404) {
+            return fetch(`${backendAPI}/user`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                telegramId: user.id,
+                firstName: user.first_name,
+                lastName: user.last_name || '',
+                earnings: 0,
+                tasks: [],
+              }),
+            }).then(response => response.json());
+          }
+          return response.json();
+        })
+        .then(data => {
+          setUser(data);
+          setTasks(data.tasks);
+          setEarnings(data.earnings);
+        })
+        .catch(error => console.error('Error fetching/creating user:', error));
+    }
+  }, [user, backendAPI]);
 
   useEffect(() => {
-    const totalEarnings = tasks.reduce((sum, task) => task.verified ? sum + task.reward : sum, 0);
+    const totalEarnings = tasks.reduce((sum, task) => (task.verified ? sum + task.reward : sum), 0);
     setEarnings(totalEarnings);
   }, [tasks]);
 
@@ -95,9 +123,31 @@ const App: React.FC = () => {
         task.id === taskId ? { ...task, verified: true } : task
       )
     );
-    setEarnings(prevEarnings =>
-      prevEarnings + (tasks.find(task => task.id === taskId)?.reward || 0)
-    );
+
+    const task = tasks.find(task => task.id === taskId);
+    if (task) {
+      setEarnings(prevEarnings => prevEarnings + task.reward);
+      // Update backend
+      if (user) {
+        fetch(`${backendAPI}/user/${user.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            earnings: earnings + task.reward,
+            tasks: tasks.map(task =>
+              task.id === taskId ? { ...task, verified: true } : task
+            )
+          }),
+        })
+          .then(response => response.json())
+          .then(data => {
+            setUser(data);
+          })
+          .catch(error => console.error('Error updating user data:', error));
+      }
+    }
   };
 
   const handleInviteFriends = () => {

@@ -7,6 +7,18 @@ interface User {
   last_name?: string;
   username?: string;
   earnings: number;
+  tasks: Task[];
+}
+
+interface Task {
+  id: number;
+  title: string;
+  reward: number;
+  completed: boolean;
+  details: string;
+  link: string;
+  verified: boolean;
+  icon: string;
 }
 
 interface TelegramUserProps {
@@ -17,14 +29,15 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser }) => {
   useEffect(() => {
     const initTelegram = async () => {
       try {
-        console.log('Initializing Telegram...');
         if (window) {
-          console.log('Telegram window ready');
           window.ready();
           const userData = window.initDataUnsafe?.user;
-          console.log('User data:', userData);
           if (userData) {
-            setUser({ ...userData, earnings: 0 }); // Add default earnings value
+            setUser({
+              ...userData,
+              earnings: 0,
+              tasks: []
+            });
           }
         }
       } catch (error) {
