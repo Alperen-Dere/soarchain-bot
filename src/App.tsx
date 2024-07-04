@@ -80,35 +80,36 @@ const App: React.FC = () => {
   const backendAPI = process.env.REACT_APP_BACKEND_API_URL;
 
   useEffect(() => {
-    if (user && backendAPI) {
-      const fetchUserData = async () => {
-        const userData = await fetchWithLogging(`${backendAPI}/user/${user.id}`);
-        if (userData.error === 'User not found') {
-          const newUser = await fetchWithLogging(`${backendAPI}/user`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              telegramId: user.id,
-              firstName: user.first_name,
-              lastName: user.last_name || '',
-              earnings: 0,
-              tasks: defaultTasks,
-            }),
-          });
-          setUser(newUser);
-          setTasks(newUser.tasks);
-          setEarnings(newUser.earnings);
-        } else {
-          setUser(userData);
-          setTasks(userData.tasks);
-          setEarnings(userData.earnings);
-        }
-      };
-      fetchUserData().catch(error => console.error('Error fetching/creating user:', error));
+    if (backendAPI) {
+      fetchWithLogging(`${backendAPI}/user/${user?.id}`)
+        .then(data => {
+          if (data.error === 'User not found') {
+            return fetchWithLogging(`${backendAPI}/user`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                telegramId: user?.id,
+                firstName: user?.first_name,
+                lastName: user?.last_name || '',
+                earnings: 0,
+                tasks: defaultTasks,
+              }),
+            });
+          }
+          return data;
+        })
+        .then(data => {
+          setUser(data);
+          setTasks(data.tasks);
+          setEarnings(data.earnings);
+        })
+        .catch(error => {
+          console.error('Error fetching/creating user:', error);
+        });
     }
-  }, [user, backendAPI]);
+  }, [backendAPI]);
 
   useEffect(() => {
     const totalEarnings = tasks.reduce((sum, task) => (task.verified ? sum + task.reward : sum), 0);
