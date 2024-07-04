@@ -9,7 +9,6 @@ import SpecialGiveawayPage from './SpecialGiveawayPage';
 import LetsSoarPage from './LetsSoarPage';
 import TelegramUser from './TelegramUser';
 import WebApp from '@twa-dev/sdk';
-import Logger from './Logger'; // Import the Logger component
 
 interface User {
   id: number;
@@ -59,11 +58,13 @@ const levelMinPoints = [
 
 const fetchWithLogging = async (url: string, options: RequestInit = {}, updateLogs: (log: string) => void) => {
   updateLogs(`Request: ${url} ${JSON.stringify(options)}`);
+  console.log(`Request: ${url} ${JSON.stringify(options)}`);
 
   const response = await fetch(url, options);
   const data = await response.json();
 
   updateLogs(`Response: ${url} ${JSON.stringify(data)}`);
+  console.log(`Response: ${url} ${JSON.stringify(data)}`);
 
   return data;
 };
@@ -180,6 +181,17 @@ const App: React.FC = () => {
       );
       setEarnings(prevEarnings => prevEarnings + 25000); // Add reward for inviting friends
     }
+  };
+
+  // Test the GET request
+  const testGetRequest = async () => {
+    const url = 'http://178.62.203.94:1317/user/12345';
+    updateLogs(`Testing GET request to: ${url}`);
+    console.log(`Testing GET request to: ${url}`);
+    const response = await fetch(url);
+    const data = await response.json();
+    updateLogs(`GET response: ${JSON.stringify(data)}`);
+    console.log(`GET response: ${JSON.stringify(data)}`);
   };
 
   // Scroll to top when page changes
@@ -314,7 +326,19 @@ const App: React.FC = () => {
       </div>
 
       {/* Logger */}
-      <Logger logs={logs} />
+      <div className="fixed bottom-40 left-1/2 transform -translate-x-1/2 bg-white text-black p-4 rounded-lg max-w-md overflow-auto max-h-60">
+        <h2 className="text-lg font-bold mb-2">Logs</h2>
+        {logs.map((log, index) => (
+          <p key={index}>{log}</p>
+        ))}
+      </div>
+
+      {/* Test GET request button */}
+      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2">
+        <button onClick={testGetRequest} className="bg-purple-600 text-white px-4 py-2 rounded-full">
+          Test GET Request
+        </button>
+      </div>
     </div>
   );
 };
