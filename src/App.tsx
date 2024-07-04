@@ -56,13 +56,6 @@ const levelMinPoints = [
   1000000000
 ];
 
-const defaultTasks: Task[] = [
-  { id: 1, title: 'Join our TG channel', reward: 5000, completed: false, details: 'Become part of our community to stay updated with all the latest news and developments.', link: 'https://t.me/soarchain', verified: false, icon: '' },
-  { id: 2, title: 'Follow our X account', reward: 5000, completed: false, details: 'Follow our official account, retweet the airdrop announcement, and tag a friend. Help us spread the word and grow our community!', link: 'https://twitter.com/soarchain', verified: false, icon: '' },
-  { id: 3, title: 'Complete the Registration Form', reward: 10000, completed: false, details: 'Provide your details through our form to ensure you’re eligible for token distribution. Make sure you enter correct information for seamless participation.', link: '#', verified: false, icon: '' },
-  { id: 4, title: 'Invite Friends', reward: 25000, completed: false, details: 'Invite your friends to join Soarchain and earn rewards when they sign up using your referral link.', link: '', verified: false, icon: '' }
-];
-
 const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
   console.log(`Request: ${url} ${JSON.stringify(options)}`);
   const response = await fetch(url, options);
@@ -74,14 +67,14 @@ const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState<User | null>(null);
-  const [tasks, setTasks] = useState<Task[]>(defaultTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [earnings, setEarnings] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
-  const backendAPI = process.env.REACT_APP_BACKEND_API_URL;
+  const backendAPI = process.env.REACT_APP_BACKEND_API_URL || '';
 
   useEffect(() => {
-    if (backendAPI) {
-      fetchWithLogging(`${backendAPI}/user/${user?.id}`)
+    if (user && backendAPI) {
+      fetchWithLogging(`${backendAPI}/user/${user.id}`)
         .then(data => {
           if (data.error === 'User not found') {
             return fetchWithLogging(`${backendAPI}/user`, {
@@ -90,11 +83,11 @@ const App: React.FC = () => {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
-                telegramId: user?.id,
-                firstName: user?.first_name,
-                lastName: user?.last_name || '',
+                telegramId: user.id,
+                firstName: user.first_name,
+                lastName: user.last_name || '',
                 earnings: 0,
-                tasks: defaultTasks,
+                tasks: [],
               }),
             });
           }
@@ -109,7 +102,7 @@ const App: React.FC = () => {
           console.error('Error fetching/creating user:', error);
         });
     }
-  }, [backendAPI]);
+  }, [user, backendAPI]);
 
   useEffect(() => {
     const totalEarnings = tasks.reduce((sum, task) => (task.verified ? sum + task.reward : sum), 0);
@@ -185,7 +178,7 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-black flex justify-center">
-      <TelegramUser setUser={setUser} />
+      <TelegramUser setUser={setUser} backendAPI={backendAPI} />
       <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
         <div className="px-4 z-10 header">
           <div className="flex items-center justify-between pt-4 logo-title">
