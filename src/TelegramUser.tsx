@@ -42,7 +42,7 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, backendAPI }) => {
           window.ready();
           const userData = window.initDataUnsafe?.user;
           if (userData) {
-            const data = await fetchWithLogging(`${backendAPI}/user/${userData.id}`, {});
+            const data = await fetchWithLogging(`${backendAPI}/user/12345`, {});
             if (data.error === 'User not found') {
               const createdUser = await fetchWithLogging(`${backendAPI}/user`, {
                 method: 'POST',
