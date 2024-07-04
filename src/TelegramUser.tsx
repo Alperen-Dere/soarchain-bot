@@ -1,14 +1,6 @@
 import React, { useEffect } from 'react';
 import window from '@twa-dev/sdk';
-
-interface User {
-  id: number;
-  first_name: string;
-  last_name?: string;
-  username?: string;
-  earnings: number;
-  tasks: Task[];
-}
+import { soarchainLogo, telegram, twitter } from './images'; // Ensure these images are imported correctly
 
 interface Task {
   id: number;
@@ -21,9 +13,30 @@ interface Task {
   icon: string;
 }
 
+interface User {
+  id: number;
+  first_name: string;
+  last_name?: string;
+  username?: string;
+  earnings: number;
+  tasks: Task[];
+}
+
 interface TelegramUserProps {
   setUser: (user: User) => void;
 }
+
+export const fetchTasks = (): Promise<Task[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve([
+        { id: 1, title: 'Join our TG channel', reward: 5000, completed: false, details: 'Become part of our community to stay updated with all the latest news and developments.', link: 'https://t.me/soarchain_tg', verified: false, icon: telegram },
+        { id: 2, title: 'Follow our X account', reward: 5000, completed: false, details: 'Follow our official account, retweet the airdrop announcement, and tag a friend. Help us spread the word and grow our community!', link: 'https://twitter.com/soar_chain', verified: false, icon: twitter },
+        { id: 3, title: 'Complete the Registration Form', reward: 10000, completed: false, details: 'Provide your details through our form to ensure you’re eligible for token distribution. Make sure you enter correct information for seamless participation.', link: '#', verified: false, icon: soarchainLogo },       
+      ]);
+    }, 1000);
+  });
+};
 
 const TelegramUser: React.FC<TelegramUserProps> = ({ setUser }) => {
   useEffect(() => {
@@ -33,35 +46,16 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser }) => {
           window.ready();
           const userData = window.initDataUnsafe?.user;
           if (userData) {
-            const response = await fetch(`https://bot.soarchain.com/user/${userData.id}/`);
-            if (response.ok) {
-              const user = await response.json();
-              setUser(user);
-            } else if (response.status === 404) {
-              // If user not found, create a new user in the backend
-              const newUser = {
-                telegramId: userData.id,
-                firstName: userData.first_name,
-                lastName: userData.last_name,
-                earnings: 1000,
-                tasks: [],
-              };
-              const createUserResponse = await fetch(`https://bot.soarchain.com/user/${userData.id}`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newUser),
-              });
-              if (createUserResponse.ok) {
-                const createdUser = await createUserResponse.json();
-                setUser(createdUser);
-              } else {
-                console.error('Failed to create new user:', createUserResponse.statusText);
-              }
-            } else {
-              console.error('Failed to fetch user:', response.statusText);
-            }
+            const tasks = await fetchTasks();
+            const user: User = {
+              id: userData.id,
+              first_name: userData.first_name,
+              last_name: userData.last_name || '',
+              username: userData.username || '',
+              earnings: 0, // Initialize earnings to 0 
+              tasks: tasks // Set default tasks
+            };
+            setUser(user);
           }
         }
       } catch (error) {
