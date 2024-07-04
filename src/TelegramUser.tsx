@@ -33,11 +33,35 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser }) => {
           window.ready();
           const userData = window.initDataUnsafe?.user;
           if (userData) {
-            setUser({
-              ...userData,
-              earnings: 0,
-              tasks: []
-            });
+            const response = await fetch(`https://bot.soarchain.com/user/${userData.id}/`);
+            if (response.ok) {
+              const user = await response.json();
+              setUser(user);
+            } else if (response.status === 404) {
+              // If user not found, create a new user in the backend
+              const newUser = {
+                telegramId: userData.id,
+                firstName: userData.first_name,
+                lastName: userData.last_name || 'Doe',
+                earnings: 1000,
+                tasks: [],
+              };
+              const createUserResponse = await fetch('https://bot.soarchain.com/user/2/', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newUser),
+              });
+              if (createUserResponse.ok) {
+                const createdUser = await createUserResponse.json();
+                setUser(createdUser);
+              } else {
+                console.error('Failed to create new user:', createUserResponse.statusText);
+              }
+            } else {
+              console.error('Failed to fetch user:', response.statusText);
+            }
           }
         }
       } catch (error) {
