@@ -42,11 +42,11 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser }) => {
               const newUser = {
                 telegramId: userData.id,
                 firstName: userData.first_name,
-                lastName: userData.last_name || 'Doe',
+                lastName: userData.last_name,
                 earnings: 1000,
                 tasks: [],
               };
-              const createUserResponse = await fetch('https://bot.soarchain.com/user/2/', {
+              const createUserResponse = await fetch(`https://bot.soarchain.com/user/${userData.id}`, {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

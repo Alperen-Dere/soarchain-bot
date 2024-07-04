@@ -56,21 +56,12 @@ const levelMinPoints = [
   1000000000
 ];
 
-const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
-  console.log(`Request: ${url} ${JSON.stringify(options)}`);
-  const response = await fetch(url, options);
-  const data = await response.json();
-  console.log(`Response: ${url} ${JSON.stringify(data)}`);
-  return data;
-};
-
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState('home');
   const [user, setUser] = useState<User | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [earnings, setEarnings] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
-  const backendAPI ="https://bot.soarchain.com/";
 
   useEffect(() => {
     if (user) {
@@ -93,38 +84,6 @@ const App: React.FC = () => {
     }
   }, [earnings]);
 
-  const handleFetchUser = () => {
-    if (user) {
-      fetchWithLogging(`${backendAPI}/user/${user.id}`, {})
-        .then(data => {
-          if (data.error === 'User not found') {
-            return fetchWithLogging(`${backendAPI}/user`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                telegramId: user.id,
-                firstName: user.first_name,
-                lastName: user.last_name || '',
-                earnings: 0,
-                tasks: [],
-              }),
-            });
-          }
-          return data;
-        })
-        .then(data => {
-          setUser(data);
-          setTasks(data.tasks);
-          setEarnings(data.earnings);
-        })
-        .catch(error => {
-          console.error('Error fetching/creating user:', error);
-        });
-    }
-  };
-
   const handleTaskLinkClick = (taskId: number, link: string) => {
     window.open(link, '_blank');
     setTasks(prevTasks =>
@@ -146,7 +105,7 @@ const App: React.FC = () => {
       setEarnings(prevEarnings => prevEarnings + task.reward);
       // Update backend
       if (user) {
-        fetchWithLogging(`${backendAPI}/user/${user.id}`, {
+        fetch(`${process.env.REACT_APP_BACKEND_API_URL}/user/${user.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -158,6 +117,7 @@ const App: React.FC = () => {
             )
           }),
         })
+          .then(response => response.json())
           .then(data => {
             setUser(data);
           })
@@ -185,7 +145,7 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-black flex justify-center">
-      <TelegramUser setUser={setUser}/>
+      <TelegramUser setUser={setUser} />
       <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
         <div className="px-4 z-10 header">
           <div className="flex items-center justify-between pt-4 logo-title">
@@ -307,13 +267,6 @@ const App: React.FC = () => {
           <Friends className="w-8 h-8 mx-auto" />
           <p className="mt-1">Let's Soar</p>
         </div>
-      </div>
-
-      {/* Fetch User Button */}
-      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2">
-        <button onClick={handleFetchUser} className="bg-purple-600 text-white px-4 py-2 rounded-full">
-          Fetch User
-        </button>
       </div>
     </div>
   );
