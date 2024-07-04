@@ -23,18 +23,9 @@ interface Task {
 
 interface TelegramUserProps {
   setUser: (user: User) => void;
-  backendAPI: string;
 }
 
-const fetchWithLogging = async (url: string, options: RequestInit = {}) => {
-  console.log(`Request: ${url} ${JSON.stringify(options)}`);
-  const response = await fetch(url, options);
-  const data = await response.json();
-  console.log(`Response: ${url} ${JSON.stringify(data)}`);
-  return data;
-};
-
-const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, backendAPI }) => {
+const TelegramUser: React.FC<TelegramUserProps> = ({ setUser }) => {
   useEffect(() => {
     const initTelegram = async () => {
       try {
@@ -42,37 +33,11 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, backendAPI }) => {
           window.ready();
           const userData = window.initDataUnsafe?.user;
           if (userData) {
-            const data = await fetchWithLogging(`${backendAPI}/user/12345`, {});
-            if (data.error === 'User not found') {
-              const createdUser = await fetchWithLogging(`${backendAPI}/user`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  telegramId: userData.id,
-                  firstName: userData.first_name,
-                  lastName: userData.last_name || '',
-                  earnings: 0,
-                  tasks: [],
-                }),
-              });
-              setUser({
-                id: createdUser.telegramId,
-                first_name: createdUser.firstName,
-                last_name: createdUser.lastName,
-                earnings: createdUser.earnings,
-                tasks: createdUser.tasks,
-              });
-            } else {
-              setUser({
-                id: data.telegramId,
-                first_name: data.firstName,
-                last_name: data.lastName,
-                earnings: data.earnings,
-                tasks: data.tasks,
-              });
-            }
+            setUser({
+              ...userData,
+              earnings: 0,
+              tasks: []
+            });
           }
         }
       } catch (error) {
@@ -81,7 +46,7 @@ const TelegramUser: React.FC<TelegramUserProps> = ({ setUser, backendAPI }) => {
     };
 
     initTelegram();
-  }, [setUser, backendAPI]);
+  }, [setUser]);
 
   return null;
 };

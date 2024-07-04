@@ -70,10 +70,32 @@ const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [earnings, setEarnings] = useState(0);
   const [levelIndex, setLevelIndex] = useState(0);
-  const backendAPI = process.env.REACT_APP_BACKEND_API_URL!;
+  const backendAPI = process.env.REACT_APP_BACKEND_API_URL || '';
+
   useEffect(() => {
-    if (user && backendAPI) {
-      fetchWithLogging(`${backendAPI}/user/${user.id}`)
+    if (user) {
+      setTasks(user.tasks);
+      setEarnings(user.earnings);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const totalEarnings = tasks.reduce((sum, task) => (task.verified ? sum + task.reward : sum), 0);
+    setEarnings(totalEarnings);
+  }, [tasks]);
+
+  useEffect(() => {
+    for (let i = levelMinPoints.length - 1; i >= 0; i--) {
+      if (earnings >= levelMinPoints[i]) {
+        setLevelIndex(i);
+        break;
+      }
+    }
+  }, [earnings]);
+
+  const handleFetchUser = () => {
+    if (user) {
+      fetchWithLogging(`${backendAPI}/user/${user.id}`, {})
         .then(data => {
           if (data.error === 'User not found') {
             return fetchWithLogging(`${backendAPI}/user`, {
@@ -101,21 +123,7 @@ const App: React.FC = () => {
           console.error('Error fetching/creating user:', error);
         });
     }
-  }, [user, backendAPI]);
-
-  useEffect(() => {
-    const totalEarnings = tasks.reduce((sum, task) => (task.verified ? sum + task.reward : sum), 0);
-    setEarnings(totalEarnings);
-  }, [tasks]);
-
-  useEffect(() => {
-    for (let i = levelMinPoints.length - 1; i >= 0; i--) {
-      if (earnings >= levelMinPoints[i]) {
-        setLevelIndex(i);
-        break;
-      }
-    }
-  }, [earnings]);
+  };
 
   const handleTaskLinkClick = (taskId: number, link: string) => {
     window.open(link, '_blank');
@@ -177,7 +185,7 @@ const App: React.FC = () => {
 
   return (
     <div className="bg-black flex justify-center">
-      <TelegramUser setUser={setUser} backendAPI={backendAPI} />
+      <TelegramUser setUser={setUser}/>
       <div className="w-full bg-black text-white h-screen font-bold flex flex-col max-w-xl">
         <div className="px-4 z-10 header">
           <div className="flex items-center justify-between pt-4 logo-title">
@@ -297,8 +305,15 @@ const App: React.FC = () => {
         </div>
         <div className={`text-center w-1/3 ${currentPage === 'letsSoar' ? 'active' : ''}`} onClick={() => setCurrentPage('letsSoar')}>
           <Friends className="w-8 h-8 mx-auto" />
-          <p className="mt-1">LeaderBoard</p>
+          <p className="mt-1">Let's Soar</p>
         </div>
+      </div>
+
+      {/* Fetch User Button */}
+      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2">
+        <button onClick={handleFetchUser} className="bg-purple-600 text-white px-4 py-2 rounded-full">
+          Fetch User
+        </button>
       </div>
     </div>
   );
