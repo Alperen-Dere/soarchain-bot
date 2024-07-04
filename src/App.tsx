@@ -298,7 +298,7 @@ const App: React.FC = () => {
         </div>
         <div className={`text-center w-1/3 ${currentPage === 'letsSoar' ? 'active' : ''}`} onClick={() => setCurrentPage('letsSoar')}>
           <Friends className="w-8 h-8 mx-auto" />
-          <p className="mt-1">Let's Soar</p>
+          <p className="mt-1">LeaderBoard</p>
         </div>
       </div>
     </div>
